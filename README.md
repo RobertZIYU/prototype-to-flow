@@ -15,11 +15,12 @@ This Claude Code skill captures live web applications (localhost or deployed) an
 - ✅ **Screen explanations & metadata** (persona, description, key decisions)
 - ✅ **Professional layout** with standardized spacing and typography
 - ✅ **Multi-step wizard support** (automatically navigates through steps)
+- ✅ **Flows longer than four steps** with every step kept in one horizontal row
 - ✅ **Published library components** (uses your design system when available)
 
 ### Before & After
 
-**Before:** A running prototype at `localhost:5173` with 4 wizard steps
+**Before:** A running prototype at `localhost:5173` with 6 wizard steps
 
 **After:** A complete user flow in Figma with:
 ```
@@ -28,8 +29,8 @@ This Claude Code skill captures live web applications (localhost or deployed) an
 │  Persona: Marketing Manager                                │
 │  Description: Create and launch a new ad campaign          │
 │                                                             │
-│  Step 1 → Step 2 → Step 3 → Step 4                        │
-│  [Screen] [Screen] [Screen] [Screen]                      │
+│  Step 1 → Step 2 → Step 3 → Step 4 → Step 5 → Step 6          │
+│  [Screen] [Screen] [Screen] [Screen] [Screen] [Screen]        │
 │  Explanation for each step...                              │
 └────────────────────────────────────────────────────────────┘
 ```
@@ -125,12 +126,14 @@ For **screenshots**:
 - Adds step labels, arrows, explanations
 - Includes persona, description, and key decision metadata
 - Applies professional typography and spacing
+- Expands section width to keep the complete flow on one horizontal row
 
 ### 4. Post-Processing
 
 - Fixes text wrapping for long explanations
 - Uses published library components when available
 - Ensures consistent naming conventions
+- Verifies every requested screen is present and aligned in the same row
 
 ## Features
 
@@ -140,12 +143,14 @@ Automatically detects and captures wizard flows:
 
 ```javascript
 // The skill will:
-1. Detect 4 steps in your wizard
-2. Ask which steps to capture
+1. Detect every step in your wizard
+2. Capture all requested steps (ask for a selection when needed)
 3. Navigate through each step
 4. Capture editable content at each step
-5. Assemble into a complete flow
+5. Assemble into a complete flow in one horizontal row
 ```
+
+There is no four-step limit. Longer flows keep the same screen dimensions and spacing while the section grows horizontally. Each distinct flow has its own section; step count never causes a flow to wrap or split.
 
 ### Published Library Integration
 

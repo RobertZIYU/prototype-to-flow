@@ -55,12 +55,14 @@ async function captureAllSteps(captureIds, port = 5173, continueButtonSelector =
   console.log('All steps captured!');
 }
 
-// Example usage:
+// Example usage: include one capture ID for every requested step, with no four-step limit.
 // const captureIds = [
 //   'abc123-step1',
 //   'def456-step2',
 //   'ghi789-step3',
-//   'jkl012-step4'
+//   'jkl012-step4',
+//   'mno345-step5',
+//   'pqr678-step6'
 // ];
 //
 // captureAllSteps(captureIds, 5173, '.wizard-footer button:last-child')

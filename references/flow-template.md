@@ -4,6 +4,8 @@ Complete code template for creating a user flow in Figma. Customize the `CONFIG`
 
 **Before running:** invoke `/figma-use` (mandatory before every `use_figma` call).
 
+**Layout invariant:** one complete flow occupies one horizontal row, regardless of step count. Add every requested step to `CONFIG.steps`; the six entries below are an example, not a limit. Extend section width rather than wrapping, shrinking screens, or splitting a long flow into multiple sections.
+
 ## Template
 
 ```javascript
@@ -19,7 +21,15 @@ const CONFIG = {
   description: "Describe the user's goal, what the user is trying to achieve",
   keyDecision: "Explain key design decision in this workflow",
   date: new Date().toLocaleDateString('en-US'),
-  steps: [
+  steps: [ // Include every requested step in order; no four-step limit.
+    {
+      name: "Step Name",
+      explanation: "Explain what this screen's goal is, what user is trying to do here"
+    },
+    {
+      name: "Step Name",
+      explanation: "Explain what this screen's goal is, what user is trying to do here"
+    },
     {
       name: "Step Name",
       explanation: "Explain what this screen's goal is, what user is trying to do here"
@@ -174,6 +184,7 @@ kdText.y = HEADER_Y + (metaLineHeight * 2);
 // STEPS (labels, frames, explanations, arrows)
 // ============================================
 CONFIG.steps.forEach((step, i) => {
+  // Keep all steps on one row: only X changes with the step index.
   const stepX = START_X + (i * STEP_PITCH);
 
   // --- Step label pill (rounded background) ---
@@ -287,7 +298,7 @@ if (section) {
 
 ### Adjusting for more/fewer steps
 
-The template handles any number of steps automatically. Just add or remove entries in the `CONFIG.steps` array. The section width scales dynamically.
+The template handles any number of steps automatically, including more than four. Populate `CONFIG.steps` with the complete ordered sequence. For example, six steps produce a section width of 15,102px; ten produce 24,950px. Screen, label, and explanation Y positions stay fixed for every step. Do not introduce row/column calculations, a maximum step count, or a wrapping layout.
 
 ### Using a component library
 

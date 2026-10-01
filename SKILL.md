@@ -9,6 +9,13 @@ Converts prototype screens into a professional, documented user flow in Figma. T
 
 Reference design: https://www.figma.com/design/EYqiJSOjOGBUj0rzLWAu1m/Untitled?node-id=1-8
 
+## Flow Length and Row Layout
+
+- Capture every step in the requested flow, including flows with more than four steps. There is no four-step limit; examples are illustrative.
+- Keep each complete flow in one horizontal row, ordered left to right. Extend the section width as steps are added; do not wrap steps, truncate the flow, or split it into sections based on its length.
+- Keep screen sizes and horizontal spacing consistent for long flows. All step labels share one Y position, all screens share another, and all explanations start at the same Y position.
+- When documenting multiple distinct flows, give each its own section and horizontal row. A flow's step count does not make it multiple flows.
+
 ## Skill Invocation Format
 
 ```
@@ -92,16 +99,20 @@ Designers prototype fast in Claude, but prototypes aren't structured for documen
 **For multi-step wizards:**
 ```
 Example output:
-"I found a 4-step wizard: Campaign Setup → Audience Targeting → Creative Assets → Review & Launch
+"I found a 6-step wizard: Campaign Setup → Audience Targeting → Creative Assets → Schedule → Review → Launch Results
 
 Would you like to capture:
-○ All 4 steps (recommended)
+○ All 6 steps (recommended)
 ○ Specific steps (select below)
   ☐ Step 1: Campaign Setup
   ☐ Step 2: Audience Targeting  
   ☐ Step 3: Creative Assets
-  ☐ Step 4: Review & Launch"
+  ☐ Step 4: Schedule
+  ☐ Step 5: Review
+  ☐ Step 6: Launch Results"
 ```
+
+Use the actual detected step count and list every step; do not stop detection or capture after step four. When the user has already requested the entire flow, capture all steps without asking them to select again.
 
 Use `AskUserQuestion` with multiSelect when user needs to choose specific steps.
 
@@ -137,7 +148,7 @@ If the user has been building a prototype in the conversation (artifacts, code, 
 1. If no target Figma file exists, invoke `/figma-create-new-file` to create a new design file
 2. Invoke `/figma-use` — this is **mandatory** before every `use_figma` call
 3. Read the code template from `references/flow-template.md`
-4. Replace the `CONFIG` object at the top with the actual flow data (title, persona, steps, etc.)
+4. Replace the `CONFIG` object at the top with the actual flow data (title, persona, steps, etc.). Populate `CONFIG.steps` with every requested step in sequence; its example length is not a limit.
 5. Execute via `use_figma` to create the complete flow layout
 
 The template creates everything in a single `use_figma` call: section, header, metadata, date pill, step labels, screen frames, explanations, and connecting arrows.
@@ -318,6 +329,10 @@ if (hasDesignSystem) {
 }
 ```
 
+#### 5.3 Verify the Complete Single-Row Flow
+
+After populating the screens, verify that the section contains all `N` requested screens and labels, with `N - 1` connecting arrows. Each screen must retain `x = 436 + index * 2462` and `y = 1619` (zero-based index). Keep labels at `y = 1254` and explanations at `y = 2797`. Confirm the final screen fits within the dynamically expanded section, including its right margin. Check the first and last screens and the transition from step four to step five when present; do not rearrange a long flow into a grid to fit the viewport.
+
 ## Layout Specification
 
 ### Structure
@@ -375,6 +390,8 @@ if (hasDesignSystem) {
 | Section height | 3368px |
 | Section width | dynamic: `436 + (N * 1920) + ((N-1) * 542) + 436` |
 
+`N` is the full requested step count. Only the section width grows with `N`; step Y positions stay fixed so the entire flow remains in one row.
+
 ### Layer Naming Convention
 
 Every layer follows this pattern so flows are consistent and searchable:
@@ -403,9 +420,9 @@ Read `references/flow-template.md` for the complete Figma Plugin API code. Adapt
 
 ## Tips
 
-- The template dynamically sizes the section width based on the number of steps — works for any count
+- The template dynamically sizes the section width based on the full number of steps, including flows longer than four steps
 - Lora and Inter are Google Fonts available in Figma by default
-- For very long flows (7+ steps), consider splitting into multiple rows or separate flow sections
+- For long flows (7+ steps), keep all steps in the same row and expand the section width; use horizontal panning or zooming to review it
 - After creating the flow, the user can manually adjust positions, add annotations, or swap placeholder frames for real designs
 - If a step has branching (e.g., success/error paths), create separate flows for each path rather than trying to branch within one flow
 - Always use `generate_figma_design` for editable content — it's faster and more accurate than manual building
